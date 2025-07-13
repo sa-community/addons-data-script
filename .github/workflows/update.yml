@@ -103,14 +103,31 @@ jobs:
                   cd script
                   npm ci
                   npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log || true
-                  echo "LOG<<EOF" >> $GITHUB_OUTPUT
-                  head -c 64000 typecheck.log >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
+                  if [[ -s typecheck.log ]]; then
+                    echo "has_errors=true" >> $GITHUB_OUTPUT
+                    echo "LOG<<EOF" >> $GITHUB_OUTPUT
+                    head -c 64000 typecheck.log >> $GITHUB_OUTPUT
+                    echo "EOF" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_errors=false" >> $GITHUB_OUTPUT
+                  fi
 
             - name: Create or comment on issue
-              if: steps.typecheck.outputs.LOG != ''
+              if: steps.typecheck.outputs.has_errors == 'true'
               uses: ovsds/create-or-update-unique-issue-action@8999e391f74f20449dcc70e94aee731a3938d543 # v1.1.0
               with:
                   title: 🚨 Typecheck Failed in CI
                   unique-title-includes: 🚨 Typecheck Failed in CI
                   body: "```\n${{ steps.typecheck.outputs.LOG }}\n```"
+
+            - name: Close issue if typecheck passed
+              if: steps.typecheck.outputs.has_errors == 'false'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  issue_number=$(gh issue list --state open --search "in:title 🚨 Typecheck Failed in CI" --json number --jq '.[0].number')
+
+                  if [[ -n "$issue_number" ]]; then
+                    gh issue comment "$issue_number" --body "✅ Typecheck is now passing. Closing this issue."
+                    gh issue close "$issue_number"
+                  fi
