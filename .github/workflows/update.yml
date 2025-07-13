@@ -110,9 +110,9 @@ jobs:
 
             - name: Debug output
               run: |
-                echo "------ OUTPUT BEGIN ------"
-                echo "${{ steps.typecheck.outputs.log }}"
-                echo "------ OUTPUT END ------"
+                  echo "------ OUTPUT BEGIN ------"
+                  echo "${{ steps.typecheck.outputs.log }}"
+                  echo "------ OUTPUT END ------"
 
             - name: Create or comment on issue
               if: steps.typecheck.outcome == 'failure'
