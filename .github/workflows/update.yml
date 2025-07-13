@@ -122,12 +122,7 @@ jobs:
 
             - name: Close issue if typecheck passed
               if: steps.typecheck.outputs.has_errors == 'false'
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  issue_number=$(gh issue list --state open --search "in:title 🚨 Typecheck Failed in CI" --json number --jq '.[0].number')
-
-                  if [[ -n "$issue_number" ]]; then
-                    gh issue comment "$issue_number" --body "✅ Typecheck is now passing. Closing this issue."
-                    gh issue close "$issue_number"
-                  fi
+              uses: lee-dohm/close-matching-issues@v2.1.0
+              with:
+                query: '🚨 Typecheck Failed in CI is:open author:app/github-actions'
+                token: ${{ secrets.GITHUB_TOKEN }}
