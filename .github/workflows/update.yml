@@ -51,23 +51,23 @@ jobs:
               if: steps.check_version.outputs.new_version == 'true'
               run: git checkout "$VERSION"
 
+            - name: Generate addons.js
+              run: |
+                  echo "module.exports = [" > addons.js
+                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >> addons.js
+                  echo "];" >> addons.js
+                  rm addons/addons.json
+
             - name: Generate manifests
               run: |
-                  HEADER='/** @type {import("../../types.d.ts").AddonManifest} */\nconst addon = '
+                  HEADER='/** @satisfies {import("../../types.d.ts").AddonManifest} */\nconst addon = '
                   FOOTER=';\nmodule.exports = addon;'
 
                   find . -type f -name "addon.json" | while read -r json_file; do
-                    js_file="$(dirname "$json_file")/index.js"
+                    js_file="$(dirname "$json_file").js"
                     echo -e "$HEADER$(cat "$json_file")$FOOTER" > "$js_file"
                     rm "$json_file"
                   done
-
-            - name: Generate addons.js
-              run: |
-                  echo "module.exports = [" > addons/addons.js
-                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./\(.)/index.js\")}"' addons/addons.json | sed 's/$/,/' >> addons/addons.js
-                  echo "];" >> addons/addons.js
-                  rm addons/addons.json
 
             - name: Checkout
               uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -96,13 +96,12 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Run typecheck
-              if: steps.check_version.outputs.new_version == 'false'
               id: typecheck
               continue-on-error: true
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log || true
+                  npx tsc ../addons.js --allowJs --checkJs --noEmit --strict > typecheck.log || true
                   if [[ -s typecheck.log ]]; then
                     echo "has_errors=true" >> $GITHUB_OUTPUT
                     echo "LOG<<EOF" >> $GITHUB_OUTPUT
