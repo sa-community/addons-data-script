@@ -124,5 +124,5 @@ jobs:
               if: steps.typecheck.outputs.has_errors == 'false'
               uses: lee-dohm/close-matching-issues@v2.1.0
               with:
-                query: '🚨 Typecheck Failed in CI is:open author:app/github-actions'
-                token: ${{ secrets.GITHUB_TOKEN }}
+                  query: "🚨 Typecheck Failed in CI is:open author:app/github-actions"
+                  token: ${{ secrets.GITHUB_TOKEN }}
