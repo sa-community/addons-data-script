@@ -57,7 +57,7 @@ jobs:
 
             - name: Generate addons.js
               run: |
-                  echo '/** @type {{ addonId: string, manifest: import("./types.d.ts").AddonManifest }[]} */\nmodule.exports = [' >addons.js
+                  echo -e '/** @type {{ addonId: string, manifest: import("./types.d.ts").AddonManifest }[]} */\nmodule.exports = [' >addons.js
                   jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >>addons.js
                   echo "];" >>addons.js
                   rm addons/addons.json
