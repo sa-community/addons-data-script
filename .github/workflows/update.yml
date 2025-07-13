@@ -33,18 +33,18 @@ jobs:
 
             - name: Get version
               run:
-                  echo "VERSION=${{ inputs.Version || '$(git describe --tags $(git rev-list --tags
-                  --max-count=1))' }}" >> "$GITHUB_ENV"
+                  echo "VERSION=${{ inputs.Version || '$(git describe --tags "$(git rev-list --tags
+                  --max-count=1)")' }}" >>"$GITHUB_ENV"
 
             - name: Check version
               id: check_version
               run: |
                   if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION"* ]]; then
-                      echo "No new version"
-                      echo "new_version=false" >> "$GITHUB_OUTPUT"
+                  	echo "No new version"
+                  	echo "new_version=false" >>"$GITHUB_OUTPUT"
                   else
-                      echo "New version found"
-                      echo "new_version=true" >> "$GITHUB_OUTPUT"
+                  	echo "New version found"
+                  	echo "new_version=true" >>"$GITHUB_OUTPUT"
                   fi
 
             - name: Checkout
@@ -53,9 +53,9 @@ jobs:
 
             - name: Generate addons.js
               run: |
-                  echo "module.exports = [" > addons.js
-                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >> addons.js
-                  echo "];" >> addons.js
+                  echo '/** @type {{ addonId: string, manifest: import("./types.d.ts").AddonManifest }[]} */\nmodule.exports = [' >addons.js
+                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >>addons.js
+                  echo "];" >>addons.js
                   rm addons/addons.json
 
             - name: Generate manifests
@@ -64,9 +64,9 @@ jobs:
                   FOOTER=');\nmodule.exports = addon;'
 
                   find . -type f -name "addon.json" | while read -r json_file; do
-                    js_file="$(dirname "$json_file").js"
-                    echo -e "$HEADER$(cat "$json_file")$FOOTER" > "$js_file"
-                    rm "$json_file"
+                  	js_file="$(dirname "$json_file").js"
+                  	echo -e "$HEADER$(cat "$json_file")$FOOTER" >"$js_file"
+                  	rm -r "$(dirname "$json_file")/"
                   done
 
             - name: Checkout
@@ -79,8 +79,8 @@ jobs:
 
             - if: steps.check_version.outputs.new_version == 'true'
               run:
-                  echo $(cat script/package.json | sed "s/VERSION/$(echo $VERSION | sed 's/v//')/")
-                  > package.json
+                  cat script/package.json | sed "s/VERSION/$(echo "$VERSION" | sed 's/v//')/"
+                  >package.json
 
             - name: Setup Node.JS
               uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -101,14 +101,14 @@ jobs:
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons.js --allowJs --checkJs --noEmit --strict > typecheck.log || true
+                  npx tsc ../addons.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
                   if [[ -s typecheck.log ]]; then
-                    echo "has_errors=true" >> $GITHUB_OUTPUT
-                    echo "LOG<<EOF" >> $GITHUB_OUTPUT
-                    head -c 64000 typecheck.log >> $GITHUB_OUTPUT
-                    echo "EOF" >> $GITHUB_OUTPUT
+                  	echo "has_errors=true" >>"$GITHUB_OUTPUT"
+                  	echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
+                  	head -c 64000 typecheck.log >>"$GITHUB_OUTPUT"
+                  	echo "EOF" >>"$GITHUB_OUTPUT"
                   else
-                    echo "has_errors=false" >> $GITHUB_OUTPUT
+                  	echo "has_errors=false" >>"$GITHUB_OUTPUT"
                   fi
 
             - name: Create or comment on issue
