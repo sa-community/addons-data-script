@@ -102,17 +102,14 @@ jobs:
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit > typecheck.log
-                  echo $(head -c 64000 typecheck.log)
-                  echo "log<<EOF" >> $GITHUB_OUTPUT
+                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log
+                  cat typecheck.log
+                  echo "LOG<<EOF" >> $GITHUB_OUTPUT
                   head -c 64000 typecheck.log >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
 
             - name: Debug output
-              run: |
-                  echo "------ OUTPUT BEGIN ------"
-                  echo "${{ steps.typecheck.outputs.log }}"
-                  echo "------ OUTPUT END ------"
+              run: echo "${{ steps.typecheck.outputs.LOG }}"
 
             - name: Create or comment on issue
               if: steps.typecheck.outcome == 'failure'
@@ -120,4 +117,4 @@ jobs:
               with:
                   title: 🚨 Typecheck Failed in CI
                   unique-title-includes: 🚨 Typecheck Failed in CI
-                  body: ${{ steps.typecheck.outputs.log }}
+                  body: ${{ steps.typecheck.outputs.LOG }}
