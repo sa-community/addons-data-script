@@ -38,12 +38,12 @@ jobs:
             - name: Get version
               run:
                   echo "VERSION=${{ inputs.Version || '$(git describe --tags "$(git rev-list --tags
-                  --max-count=1)")' }}${{ inputs.Postfix }}" >>"$GITHUB_ENV"
+                  --max-count=1)")' }}" >>"$GITHUB_ENV"
 
             - name: Check version
               id: check_version
               run: |
-                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION"* ]]; then
+                  if [[ "v$(npm view @sa-community/addons-data version)${{ inputs.Postfix }}" == "$VERSION"* ]]; then
                   	echo "No new version"
                   	echo "new_version=false" >>"$GITHUB_OUTPUT"
                   else
@@ -83,8 +83,8 @@ jobs:
 
             - if: steps.check_version.outputs.new_version == 'true'
               run:
-                  cat script/package.json | sed "s/VERSION/$(echo "$VERSION" | sed 's/v//')/"
-                  >package.json
+                  cat script/package.json | sed "s/VERSION/$(echo "$VERSION" | sed 's/v//')${{
+                  inputs.Postfix }}/" >package.json
 
             - name: Setup Node.JS
               uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
