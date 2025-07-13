@@ -1,5 +1,5 @@
 declare module "@sa-community/addons-data" {
-	/** @author [ScratchAddons/manifest-schema](https://github.com/ScratchAddons/manifest-schema/blob/132b0d7/1/1.21.json) */
+	/** @author [ScratchAddons/manifest-schema](https://github.com/ScratchAddons/manifest-schema/blob/e74537b/1/1.23.json) */
 
 	/** The value manipulator. */
 	export type cssManipulator =
@@ -93,8 +93,7 @@ declare module "@sa-community/addons-data" {
 				transparent: cssManipulator;
 		  };
 	/**
-	 * `"*"`: A match rule for any URL on Scratch origin. The script will execute will execute in
-	 * all pages.
+	 * `"*"`: A match rule for any URL on Scratch origin. The script will execute in all pages.
 	 *
 	 * `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute
 	 * RegEx pattern, and patterns that don’t start will be treated as an relative RegEx pattern.
@@ -138,6 +137,8 @@ declare module "@sa-community/addons-data" {
 	export type tableNestableSettings = {
 		/** The name of the setting. */
 		name: string;
+		/** The description of the setting shown in a tooltip. */
+		description?: string;
 		/** The identifier of the setting to get the specified value from your code. */
 		id: string;
 		if?: _if;
@@ -237,6 +238,7 @@ declare module "@sa-community/addons-data" {
 		tags: (
 			| "community"
 			| "editor"
+			| "player"
 			| "popup"
 			| "theme"
 			| "beta"
@@ -247,7 +249,6 @@ declare module "@sa-community/addons-data" {
 			| "easterEgg"
 			| "codeEditor"
 			| "costumeEditor"
-			| "projectPlayer"
 			| "editorMenuBar"
 			| "projectPage"
 			| "profiles"
@@ -390,10 +391,6 @@ declare module "@sa-community/addons-data" {
 			name: string;
 			/** Determines whether to show the fullscreen button. */
 			fullscreen?: boolean;
-			/** The filename of the popup page. */
-			html: string;
-			/** The filename of the popup script. */
-			script: string;
 		};
 		/**
 		 * Determines whether the addon’s scripts should be considered disabled when disabled as the
@@ -429,17 +426,19 @@ declare module "@sa-community/addons-data" {
 		}[];
 		/** The version that introduced the addon. */
 		versionAdded: `1.${number}.${number}`;
-		/** The preview used for the addon. */
-		addonPreview?: {
-			/** The type of the preview. */
-			type: "editor-dark-mode";
-		};
+		/** Whether the addon has a preview. */
+		addonPreview?: boolean;
 		/** The preview used for presets. */
-		presetPreview?: {
-			/** The type of the preview. */
-			type: "palette";
-			colors?: string[];
-		};
+		presetPreview?:
+			| {
+					/** The type of the preview. */
+					type: "palette";
+					colors: string[];
+			  }
+			| {
+					/** The type of the preview. */
+					type: "stage-monitor-preset";
+			  };
 		/** The information about the latest update. */
 		latestUpdate?: {
 			/** The version of the update. */
@@ -451,6 +450,12 @@ declare module "@sa-community/addons-data" {
 			/** The array of new setting IDs. */
 			newSettings?: string[];
 		};
+		/**
+		 * The list of related addons displayed on the settings page.
+		 *
+		 * An addon ID.
+		 */
+		relatedAddons?: string[];
 	};
 
 	const Addons: { addonId: string; manifest: AddonManifest }[];
