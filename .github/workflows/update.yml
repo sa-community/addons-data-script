@@ -35,46 +35,82 @@ jobs:
               run:
                   echo "VERSION=${{ inputs.Version || '$(git describe --tags $(git rev-list --tags
                   --max-count=1))' }}" >> "$GITHUB_ENV"
+
+            - name: Check version
+              id: check_version
+              run: |
+                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION"* ]]; then
+                      echo "No new version"
+                      echo "new_version=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "New version found"
+                      echo "new_version=true" >> "$GITHUB_OUTPUT"
+                  fi
+
             - name: Checkout
+              if: steps.check_version.outputs.new_version == 'true'
               run: git checkout "$VERSION"
+
+            - name: Generate manifests
+              run: |
+                  HEADER='/** @type {import("../../types.d.ts").AddonManifest} */\nconst addon = '
+                  FOOTER=';\nmodule.exports = addon;'
+
+                  find . -type f -name "addon.json" | while read -r json_file; do
+                    js_file="$(dirname "$json_file")/index.js"
+                    echo -e "$HEADER$(cat "$json_file")$FOOTER" > "$js_file"
+                    rm "$json_file"
+                  done
+
+            - name: Generate addons.js
+              run: |
+                  echo "module.exports = [" > addons/addons.js
+                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./\(.)/index.js\")}"' addons/addons.json | sed 's/$/,/' >> addons/addons.js
+                  echo "];" >> addons/addons.js
+                  rm addons/addons.json
+
+            - name: Checkout
+              uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+              with:
+                  path: script
+
+            - name: Move types
+              run: mv script/types.d.ts types.d.ts
+
+            - if: steps.check_version.outputs.new_version == 'true'
+              run:
+                  echo $(cat script/package.json | sed "s/VERSION/$(echo $VERSION | sed 's/v//')/")
+                  > package.json
 
             - name: Setup Node.JS
               uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
               with:
                   node-version: 22.14.0
                   registry-url: "https://registry.npmjs.org"
-            - name: Check version
-              id: check_version
-              run: |
-                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION"* ]]; then
-                      echo "No new version"
-                      echo "stop_workflow=true" >> "$GITHUB_OUTPUT"
-                  else
-                      echo "New version found"
-                      echo "stop_workflow=false" >> "$GITHUB_OUTPUT"
-                  fi
-
-            # Setup directory
-            - name: Checkout
-              uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-              if: steps.check_version.outputs.stop_workflow == 'false'
-              with:
-                  path: dist
-            - if: steps.check_version.outputs.stop_workflow == 'false'
-              run: cp manifest.json dist/manifest.json
-            - if: steps.check_version.outputs.stop_workflow == 'false'
-              run:
-                  echo $(cat dist/package.json | sed "s/VERSION/$(echo $VERSION | sed 's/v//')/") >
-                  dist/package.json
-
-            - name: Get addons
-              if: steps.check_version.outputs.stop_workflow == 'false'
-              run: |
-                  jq -c 'map(select(startswith("//") | not) | {addonId: ., manifest: (try input catch null)})' addons/addons.json $(jq -r 'map(select(startswith("//") | not) | "addons/" + . + "/addon.json") | join(" ")' addons/addons.json) >> dist/addons.json
 
             - name: Publish
-              if: steps.check_version.outputs.stop_workflow == 'false'
+              if: steps.check_version.outputs.new_version == 'true'
               run: npm publish --provenance --access public
               working-directory: dist
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Run typecheck
+              if: steps.check_version.outputs.new_version == 'false'
+              id: typecheck
+              continue-on-error: true
+              run: |
+                  cd script
+                  npm ci
+                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit > typecheck.log
+                  echo "log<<EOF" >> $GITHUB_OUTPUT
+                  echo "$(head -c 64000 script/typecheck.log)" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Create or comment on issue
+              if: steps.typecheck.outcome == 'failure'
+              uses: ovsds/create-or-update-unique-issue-action@v1.1.0
+              with:
+                  title: 🚨 Typecheck Failed in CI
+                  unique-title-includes: 🚨 Typecheck Failed in CI
+                  body: "${{ steps.typecheck.outputs.log }}"

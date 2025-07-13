@@ -10,11 +10,10 @@
 	"maintainers": [
 		"RedGuy12"
 	],
-	"main": "addons.json",
-	"types": "types.d.ts",
+	"main": "addons/addons.js",
 	"files": [
 		"package.json",
-		"addons.json",
+		"addons/",
 		"manifest.json",
 		"LICENSE",
 		"types.d.ts"
@@ -25,6 +24,7 @@
 	"prettier": "@redguy12/prettier-config",
 	"devDependencies": {
 		"@redguy12/prettier-config": "3.4.3",
-		"prettier": "3.5.3"
+		"prettier": "3.5.3",
+		"typescript": "5.8.3"
 	}
 }
