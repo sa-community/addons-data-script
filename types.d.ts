@@ -282,7 +282,7 @@ export type AddonManifest = {
 	name: string;
 
 	/** The description of the addons. Any credits and attributions also belong here. */
-	descriptio: string;
+	description: string;
 
 	/**
 	 * Tags which are used for filtering and badges on the Scratch Addons settings page.

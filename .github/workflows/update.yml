@@ -113,4 +113,4 @@ jobs:
               with:
                   title: 🚨 Typecheck Failed in CI
                   unique-title-includes: 🚨 Typecheck Failed in CI
-                  body: ${{ steps.typecheck.outputs.LOG }}
+                  body: "```\n${{ steps.typecheck.outputs.LOG }}\n```"
