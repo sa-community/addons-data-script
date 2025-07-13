@@ -290,7 +290,7 @@ export type AddonManifest = {
 	 * A tag.
 	 */
 	tags: (
-		| "community"
+		| "commmunity"
 		| "editor"
 		| "player"
 		| "popup"

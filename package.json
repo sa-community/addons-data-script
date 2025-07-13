@@ -2,7 +2,7 @@
 	"name": "@sa-community/addons-data",
 	"version": "VERSION",
 	"description": "Scratch Addons’ addons data",
-	"homepage": "https://github.com/scratchaddons-community",
+	"homepage": "https://npmjs.com/package/@sa-community/addons-data",
 	"repository": {
 		"url": "git+https://github.com/sa-community/addons-data-script.git"
 	},
@@ -12,11 +12,12 @@
 	],
 	"main": "addons.js",
 	"files": [
-		"package.json",
-		"addons/",
 		"addons.js",
-		"manifest.json",
+		"addons/",
 		"LICENSE",
+		"manifest.json",
+		"package.json",
+		"README.md",
 		"types.d.ts"
 	],
 	"scripts": {

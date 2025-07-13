@@ -44,11 +44,11 @@ jobs:
               id: check_version
               run: |
                   if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION${{ inputs.Postfix }}"* ]]; then
-                  	echo "No new version"
-                  	echo "new_version=false" >>"$GITHUB_OUTPUT"
+                    echo "No new version"
+                    echo "new_version=false" >>"$GITHUB_OUTPUT"
                   else
-                  	echo "New version found"
-                  	echo "new_version=true" >>"$GITHUB_OUTPUT"
+                    echo "New version found"
+                    echo "new_version=true" >>"$GITHUB_OUTPUT"
                   fi
 
             - name: Checkout
@@ -57,20 +57,26 @@ jobs:
 
             - name: Generate addons.js
               run: |
-                  echo -e '/** @type {{ addonId: string, manifest: import("./types.d.ts").AddonManifest }[]} */\nmodule.exports = [' >addons.js
+                  echo "module.exports = [" >addons.js
                   jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >>addons.js
                   echo "];" >>addons.js
+
+                  echo -e 'declare const _exports: { addonId: string; manifest: import("./types.d.ts").AddonManifest; }[];\nexport = _exports;' >addons.d.ts
+
                   rm addons/addons.json
 
             - name: Generate manifests
               run: |
-                  HEADER='/** @satisfies {import("../types.d.ts").AddonManifest} */\nconst addon = /** @type {const} */ ('
-                  FOOTER=');\nmodule.exports = addon;'
-
                   find . -type f -name "addon.json" | while read -r json_file; do
-                  	js_file="$(dirname "$json_file").js"
-                  	echo -e "$HEADER$(cat "$json_file")$FOOTER" >"$js_file"
-                  	rm -r "$(dirname "$json_file")/"
+                    dirname="$(dirname "$json_file")"
+
+                    echo -e -n '/** @type {import("../types.d.ts").AddonManifest} */\nconst addon = ' >"$dirname.js"
+                    cat "$json_file" >>"$dirname.js"
+                    echo -e -n ";\nmodule.exports = addon;" >>"$dirname.js"
+
+                    echo -e 'declare const addon: import("../types.d.ts").AddonManifest;\nexport = addon;' >"$dirname.d.ts"
+
+                    rm -r "$dirname/"
                   done
 
             - name: Checkout
@@ -80,6 +86,9 @@ jobs:
 
             - name: Move types
               run: mv script/types.d.ts types.d.ts
+
+            - name: Move README
+              run: mv script/README.md README.md
 
             - if: steps.check_version.outputs.new_version == 'true'
               run:
@@ -92,26 +101,19 @@ jobs:
                   node-version: 22.14.0
                   registry-url: "https://registry.npmjs.org"
 
-            - name: Publish
-              if: steps.check_version.outputs.new_version == 'true'
-              run: npm publish --provenance --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
             - name: Run typecheck
               id: typecheck
-              continue-on-error: true
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
+                  npx tsc ../addons.js ../addons/**.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
                   if [[ -s typecheck.log ]]; then
-                  	echo "has_errors=true" >>"$GITHUB_OUTPUT"
-                  	echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
-                  	head -c 64000 typecheck.log >>"$GITHUB_OUTPUT"
-                  	echo "EOF" >>"$GITHUB_OUTPUT"
+                    echo "has_errors=true" >>"$GITHUB_OUTPUT"
+                    echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
+                    head -c 64000 typecheck.log >>"$GITHUB_OUTPUT"
+                    echo "EOF" >>"$GITHUB_OUTPUT"
                   else
-                  	echo "has_errors=false" >>"$GITHUB_OUTPUT"
+                    echo "has_errors=false" >>"$GITHUB_OUTPUT"
                   fi
 
             - name: Create or comment on issue
