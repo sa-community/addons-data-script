@@ -7,6 +7,10 @@ on:
             Version:
                 required: false
                 type: string
+            Postfix:
+                required: false
+                type: string
+                default: ""
     schedule:
         - cron: 30 11/12 * * *
 
@@ -34,7 +38,7 @@ jobs:
             - name: Get version
               run:
                   echo "VERSION=${{ inputs.Version || '$(git describe --tags "$(git rev-list --tags
-                  --max-count=1)")' }}" >>"$GITHUB_ENV"
+                  --max-count=1)")' }}${{ inputs.Postfix }}" >>"$GITHUB_ENV"
 
             - name: Check version
               id: check_version
