@@ -137,18 +137,20 @@ export type cssManipulator =
 /**
  * `"*"`: A match rule for any URL on Scratch origin. The script will execute in all pages.
  *
- * `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx pattern, and
- * patterns that don't start will be treated as an relative RegEx pattern.
+ * `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx
+ * pattern, and patterns that don't start will be treated as an relative RegEx pattern.
  *
- * `[…]`: An array that contains match rules. The script will execute if it matches any of the rules.
+ * `[…]`: An array that contains match rules. The script will execute if it matches any of the
+ * rules.
  *
- * - `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx pattern, and
- *   patterns that don’t start will be treated as an relative RegEx pattern.
- * - `"projects"`, `"projectEmbeds"`, `"studios"`, `"studioComments"`, `"profiles"`, `"topics"`, `"newPostScreens"`,
- *   `"editingScreens"`, `"forums"`, `"scratchWWWNoProject"`: A match rule shortcut.
+ * - `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx
+ *   pattern, and patterns that don’t start will be treated as an relative RegEx pattern.
+ * - `"projects"`, `"projectEmbeds"`, `"studios"`, `"studioComments"`, `"profiles"`, `"topics"`,
+ *   `"newPostScreens"`, `"editingScreens"`, `"forums"`, `"scratchWWWNoProject"`: A match rule
+ *   shortcut.
  * - `"isNotScratchWWW"`: A match rule shortcut matcher.
- * - `/^https:\/\//`: A URL match rule. TODO: Clarify this. This seemed only for absolute patterns. Is the relative is
- *   on the top?
+ * - `/^https:\/\//`: A URL match rule. TODO: Clarify this. This seemed only for absolute patterns. Is
+ *   the relative is on the top?
  */
 export type matches =
 	| "*"
@@ -246,7 +248,10 @@ export type tableNestableSettings = {
 			/** The default value of the setting. */
 			default: `#${string}`;
 
-			/** Determines whether the transparency/opacity/alpha value can be changed when choosing a color. */
+			/**
+			 * Determines whether the transparency/opacity/alpha value can be changed when choosing
+			 * a color.
+			 */
 			allowTransparency?: boolean;
 	  }
 	| {
@@ -317,8 +322,8 @@ export type AddonManifest = {
 	 *
 	 * Unlike persistent scripts, this is an array of objects, not strings.
 	 *
-	 * Each object must specify the url to the userscript through the "url" property, and provide an array of URL
-	 * matches.
+	 * Each object must specify the url to the userscript through the "url" property, and provide an
+	 * array of URL matches.
 	 */
 	userscripts?: {
 		/** The path to the userscript. */
@@ -333,10 +338,11 @@ export type AddonManifest = {
 	}[];
 
 	/**
-	 * Similarly to {@link AddonManifest.userscripts userscripts}, you can specify a "userstyles" array.
+	 * Similarly to {@link AddonManifest.userscripts userscripts}, you can specify a "userstyles"
+	 * array.
 	 *
-	 * Each object must specify the url to the stylesheet through the "url" property, and provide an array of URL
-	 * matches.
+	 * Each object must specify the url to the stylesheet through the "url" property, and provide an
+	 * array of URL matches.
 	 */
 	userstyles?: {
 		/** The path to the userstyle. */
@@ -348,8 +354,9 @@ export type AddonManifest = {
 	}[];
 
 	/**
-	 * The "settings" object allow the addon’s users to specify settings in Scratch Addons’ settings panel. Inside
-	 * your persistent scripts and userscripts, you can then access those settings with the "addon.settings" API.
+	 * The "settings" object allow the addon’s users to specify settings in Scratch Addons’ settings
+	 * panel. Inside your persistent scripts and userscripts, you can then access those settings
+	 * with the "addon.settings" API.
 	 *
 	 * Specify an "settings" property and provide an array of setting objects.
 	 *
@@ -412,10 +419,11 @@ export type AddonManifest = {
 	)[];
 
 	/**
-	 * You can provide the "enabledByDefault" property and set it to true. Its default value is false.
+	 * You can provide the "enabledByDefault" property and set it to true. Its default value is
+	 * false.
 	 *
-	 * Keep in mind, few addons will be enabled by default. If you want your addon to be enabled by default, please
-	 * open a discussion issue.
+	 * Keep in mind, few addons will be enabled by default. If you want your addon to be enabled by
+	 * default, please open a discussion issue.
 	 *
 	 * @default false
 	 */
@@ -480,28 +488,32 @@ export type AddonManifest = {
 	};
 
 	/**
-	 * Determines whether the addon’s scripts should be considered disabled when disabled as the page is running.
+	 * Determines whether the addon’s scripts should be considered disabled when disabled as the
+	 * page is running.
 	 *
 	 * @default false
 	 */
 	dynamicDisable?: boolean;
 
 	/**
-	 * Determines whether the addon’s scripts should be considered enabled when enabled as the page is running.
+	 * Determines whether the addon’s scripts should be considered enabled when enabled as the page
+	 * is running.
 	 *
 	 * @default false
 	 */
 	dynamicEnable?: boolean;
 
 	/**
-	 * Determines whether the addon’s userstyles should be injected as style elements rather than link elements.
+	 * Determines whether the addon’s userstyles should be injected as style elements rather than
+	 * link elements.
 	 *
 	 * @default false
 	 */
 	injectAsStyleElt?: boolean;
 
 	/**
-	 * Determines whether the addon’s userstyles should be removed and rematched to the new settings.
+	 * Determines whether the addon’s userstyles should be removed and rematched to the new
+	 * settings.
 	 *
 	 * @default false
 	 */
