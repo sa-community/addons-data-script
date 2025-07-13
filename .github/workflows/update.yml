@@ -43,7 +43,7 @@ jobs:
             - name: Check version
               id: check_version
               run: |
-                  if [[ "v$(npm view @sa-community/addons-data version)${{ inputs.Postfix }}" == "$VERSION"* ]]; then
+                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION${{ inputs.Postfix }}"* ]]; then
                   	echo "No new version"
                   	echo "new_version=false" >>"$GITHUB_OUTPUT"
                   else
