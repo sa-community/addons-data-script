@@ -4,7 +4,7 @@
 	"description": "Scratch Addons’ addons data",
 	"homepage": "https://github.com/scratchaddons-community",
 	"repository": {
-		"url": "git+https://github.com/scratchaddons-community/addons-data-script.git"
+		"url": "git+https://github.com/sa-community/addons-data-script.git"
 	},
 	"license": "GPLv3",
 	"maintainers": [
