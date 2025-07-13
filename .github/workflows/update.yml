@@ -104,7 +104,7 @@ jobs:
                   npm ci
                   npx tsc ../addons/addons.js --allowJs --checkJs --noEmit > typecheck.log
                   echo "log<<EOF" >> $GITHUB_OUTPUT
-                  echo "$(head -c 64000 script/typecheck.log)" >> $GITHUB_OUTPUT
+                  head -c 64000 typecheck.log >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
 
             - name: Create or comment on issue
