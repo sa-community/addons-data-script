@@ -102,20 +102,13 @@ jobs:
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict
-                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log
-                  ls
-                  ls ..
-                  cat typecheck.log
+                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log || true
                   echo "LOG<<EOF" >> $GITHUB_OUTPUT
                   head -c 64000 typecheck.log >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
 
-            - name: Debug output
-              run: echo "${{ steps.typecheck.outputs.LOG }}"
-
             - name: Create or comment on issue
-              if: steps.typecheck.outcome == 'failure'
+              if: steps.typecheck.outputs.LOG != ''
               uses: ovsds/create-or-update-unique-issue-action@8999e391f74f20449dcc70e94aee731a3938d543 # v1.1.0
               with:
                   title: 🚨 Typecheck Failed in CI
