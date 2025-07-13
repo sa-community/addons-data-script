@@ -8,107 +8,148 @@ declare module "@sa-community/addons-data" {
 		| {
 				/** The type of the manipulator. */
 				type: "settingValue";
+
 				/** The setting ID to reference. */
 				settingId: string;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "ternary";
+
 				/** The source to manipulate. */
 				source: cssManipulator;
+
 				/** The value in case the source is truthy. */
 				true: cssManipulator | null;
+
 				/** The value in case the source is falsy. */
 				false: cssManipulator | null;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "textColor";
+
 				/** The source to manipulate. */
 				source: cssManipulator;
+
 				threshold?: cssManipulator;
+
 				/** The value for black text. */
 				black?: cssManipulator;
+
 				/** The value for white text. */
 				white?: cssManipulator;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "multiply" | "brighten";
+
 				/** The source to manipulate. */
 				source: cssManipulator;
-				/** The red value of the color. */
+
+				/**
+				 * The red value of the color.
+				 *
+				 * @default 1
+				 */
 				r?: number;
-				/** The green value of the color. */
+
+				/**
+				 * The green value of the color.
+				 *
+				 * @default 1
+				 */
 				g?: number;
-				/** The blue value of the color. */
+
+				/**
+				 * The blue value of the color.
+				 *
+				 * @default 1
+				 */
 				b?: number;
-				/** The alpha/opacity value of the color. */
+
+				/**
+				 * The alpha/opacity value of the color.
+				 *
+				 * @default 1
+				 */
 				a?: number;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "alphaBlend";
+
 				/** The source that provides opaque color. */
 				opaqueSource: cssManipulator;
+
 				/** The source that provides transparent color. */
 				transparentSource: cssManipulator;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "recolorFilter";
+
 				/** The source that provides the color. */
 				source: cssManipulator;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "makeHsv";
+
 				/** The source that provides hue. */
 				h: cssManipulator;
+
 				/** The source that provides saturation. */
 				s: cssManipulator;
+
 				/** The source that provides value. */
 				v: cssManipulator;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "map";
+
 				/** The source that provides the color. */
 				source: cssManipulator;
+
 				/** The possible options. */
 				options: Record<string, cssManipulator>;
+
 				/** The default, in case the source does not map to any options. */
-				default: cssManipulator;
+				default?: cssManipulator;
 		  }
 		| {
 				/** The type of the manipulator. */
 				type: "alphaThreshold";
+
 				/** The source that provides the color. */
 				source: cssManipulator;
+
 				/** The alpha threshold for using opaque color. */
 				threshold?: cssManipulator;
+
 				/** The opaque color. */
 				opaque: cssManipulator;
+
 				/** The transparent color. */
 				transparent: cssManipulator;
 		  };
+
 	/**
 	 * `"*"`: A match rule for any URL on Scratch origin. The script will execute in all pages.
 	 *
-	 * `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute
-	 * RegEx pattern, and patterns that don’t start will be treated as an relative RegEx pattern.
+	 * `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx pattern, and
+	 * patterns that don't start will be treated as an relative RegEx pattern.
 	 *
-	 * `[…]`: An array that contains match rules. The script will execute if it matches any of the
-	 * rules.
+	 * `[…]`: An array that contains match rules. The script will execute if it matches any of the rules.
 	 *
-	 * - `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute
-	 *   RegEx pattern, and patterns that don’t start will be treated as an relative RegEx pattern.
-	 * - `"projects"`, `"projectEmbeds"`, `"studios"`, `"studioComments"`, `"profiles"`, `"topics"`,
-	 *   `"newPostScreens"`, `"editingScreens"`, `"forums"`, `"scratchWWWNoProject"`: A match rule
-	 *   shortcut.
+	 * - `/^\^/`: A RegEx match rule. Patterns starting with https will be treated as an absolute RegEx pattern, and
+	 *   patterns that don’t start will be treated as an relative RegEx pattern.
+	 * - `"projects"`, `"projectEmbeds"`, `"studios"`, `"studioComments"`, `"profiles"`, `"topics"`, `"newPostScreens"`,
+	 *   `"editingScreens"`, `"forums"`, `"scratchWWWNoProject"`: A match rule shortcut.
 	 * - `"isNotScratchWWW"`: A match rule shortcut matcher.
-	 * - `/^https://…/`: A URL match rule. TODO: Clarify this. This seemed only for absolute patterns.
-	 *   Is the relative is on the top?
+	 * - `/^https:\/\//`: A URL match rule. TODO: Clarify this. This seemed only for absolute patterns. Is the relative is
+	 *   on the top?
 	 */
 	export type matches =
 		| "*"
@@ -131,21 +172,28 @@ declare module "@sa-community/addons-data" {
 				| `https://${string}`
 		  )[];
 
-	export type _if = { settings: Record<string, unknown>; addonEnabled: string | string[] };
+	export type _if = { settings?: Record<string, unknown>; addonEnabled?: string | string[] };
+
 	export type serializedTableNestableSetting = boolean | number | string;
+
 	export type serializedTableNestableSettings = Record<string, serializedTableNestableSetting>;
+
 	export type tableNestableSettings = {
 		/** The name of the setting. */
 		name: string;
+
 		/** The description of the setting shown in a tooltip. */
 		description?: string;
+
 		/** The identifier of the setting to get the specified value from your code. */
 		id: string;
+
 		if?: _if;
 	} & (
 		| {
 				/** The type of the setting. */
 				type: "select";
+
 				/**
 				 * The potential values for the select setting.
 				 *
@@ -156,10 +204,12 @@ declare module "@sa-community/addons-data" {
 					| {
 							/** The name of the potential value. */
 							name: string;
+
 							/** The identifier of the potential value. */
 							id: string;
 					  }
 				)[];
+
 				/** The default value of the setting. */
 				default: string;
 		  }
@@ -197,10 +247,7 @@ declare module "@sa-community/addons-data" {
 				/** The default value of the setting. */
 				default: `#${string}`;
 
-				/**
-				 * Determines whether the transparency/opacity/alpha value can be changed when
-				 * choosing a color.
-				 */
+				/** Determines whether the transparency/opacity/alpha value can be changed when choosing a color. */
 				allowTransparency?: boolean;
 		  }
 		| {
@@ -226,10 +273,13 @@ declare module "@sa-community/addons-data" {
 	export type AddonManifest = {
 		/** The URL to the schema. */
 		$schema?: string;
+
 		/** The name of the addon. Don’t make it too long. */
 		name: string;
+
 		/** The description of the addons. Any credits and attributions also belong here. */
 		description: string;
+
 		/**
 		 * Tags which are used for filtering and badges on the Scratch Addons settings page.
 		 *
@@ -255,45 +305,52 @@ declare module "@sa-community/addons-data" {
 			| "studios"
 			| "comments"
 		)[];
+
 		/**
 		 * You can specify permissions by providing a "permissions" array.
 		 *
 		 * A permission.
 		 */
 		permissions?: ("notifications" | "clipboardWrite")[];
+
 		/**
 		 * You can add userscripts by providing a "userscripts" array.
 		 *
 		 * Unlike persistent scripts, this is an array of objects, not strings.
 		 *
-		 * Each object must specify the url to the userscript through the "url" property, and
-		 * provide an array of URL matches.
+		 * Each object must specify the url to the userscript through the "url" property, and provide an array of URL
+		 * matches.
 		 */
 		userscripts?: {
 			/** The path to the userscript. */
 			url: `${string}.js`;
+
 			matches: matches;
+
 			/** Determines whether the addon should be run after the document is complete loading. */
 			runAtComplete?: boolean;
+
 			if?: _if;
 		}[];
+
 		/**
-		 * Similarly to {@link AddonManifest.userscripts userscripts}, you can specify a "userstyles"
-		 * array.
+		 * Similarly to {@link AddonManifest.userscripts userscripts}, you can specify a "userstyles" array.
 		 *
-		 * Each object must specify the url to the stylesheet through the "url" property, and
-		 * provide an array of URL matches.
+		 * Each object must specify the url to the stylesheet through the "url" property, and provide an array of URL
+		 * matches.
 		 */
 		userstyles?: {
 			/** The path to the userstyle. */
 			url: `${string}.css`;
+
 			matches: matches;
+
 			if?: _if;
 		}[];
+
 		/**
-		 * The "settings" object allow the addon’s users to specify settings in Scratch Addons’
-		 * settings panel. Inside your persistent scripts and userscripts, you can then access those
-		 * settings with the "addon.settings" API.
+		 * The "settings" object allow the addon’s users to specify settings in Scratch Addons’ settings panel. Inside
+		 * your persistent scripts and userscripts, you can then access those settings with the "addon.settings" API.
 		 *
 		 * Specify an "settings" property and provide an array of setting objects.
 		 *
@@ -304,57 +361,78 @@ declare module "@sa-community/addons-data" {
 			| {
 					/** The name of the setting. */
 					name: string;
+
 					/** The identifier of the setting to get the specified value from your code. */
 					id: string;
+
 					type: "table";
+
 					/** The array that contains default table items. */
 					default?: serializedTableNestableSettings[];
+
 					if?: _if;
+
 					/** The rows of the table. The ordering is used in default and presets. */
 					row: tableNestableSettings[];
+
 					/**
 					 * The table presets.
 					 *
 					 * The table preset.
 					 */
-					presets?: { name: string; value: serializedTableNestableSettings }[];
+					presets?: { name: string; values: serializedTableNestableSettings }[];
 			  }
 		)[];
+
 		/**
 		 * An array containing credits to the authors/contributors of the addon.
 		 *
 		 * A credited author/contributor.
 		 */
-		credits?: ({
-			/** The name of the credited person. */
-			name: string;
-			/** The link relevant to the credit. */
-			link?: `http${string}`;
-		} & (
-			| Record<string, never>
+		credits?: (
 			| {
+					/** The name of the credited person. */
+					name: string;
+
+					/** The link relevant to the credit. */
+					link?: `http${string}`;
+			  }
+			| {
+					/** The name of the credited person. */
+					name: string;
+
+					/** The link relevant to the credit. */
+					link?: `http${string}`;
+
 					/** The ID for the credit. Required if note is in use. */
 					id: string;
+
 					/** The note for the credit. */
 					note?: string;
 			  }
-		))[];
+		)[];
+
 		/**
-		 * You can provide the "enabledByDefault" property and set it to true. Its default value is
-		 * false.
+		 * You can provide the "enabledByDefault" property and set it to true. Its default value is false.
 		 *
-		 * Keep in mind, few addons will be enabled by default. If you want your addon to be enabled
-		 * by default, please open a discussion issue.
+		 * Keep in mind, few addons will be enabled by default. If you want your addon to be enabled by default, please
+		 * open a discussion issue.
+		 *
+		 * @default false
 		 */
 		enabledByDefault?: boolean;
+
 		/** An array containing presets for settings. */
 		presets?: {
 			/** The name of the preset. */
 			name: string;
+
 			/** The identifier of the preset. */
 			id: string;
+
 			/** The description of the preset. */
 			description?: string;
+
 			/**
 			 * An object containing preset values of the settings.
 			 *
@@ -365,12 +443,14 @@ declare module "@sa-community/addons-data" {
 				serializedTableNestableSetting | serializedTableNestableSettings[]
 			>;
 		}[];
+
 		/**
 		 * An array of libraries that the addon uses.
 		 *
 		 * A library identifier.
 		 */
 		libraries?: string[];
+
 		/**
 		 * An array of additional information (e.g. warnings, notices) about the addon.
 		 *
@@ -379,39 +459,58 @@ declare module "@sa-community/addons-data" {
 		info?: {
 			/** Type of the information. */
 			type?: "warning" | "notice" | "info";
+
 			/** ID of the information. */
 			id: string;
+
 			/** Text of the information. */
 			text: string;
 		}[];
+
+		/** An object for the popup. */
 		popup?: {
 			/** The path to the popup icon. */
 			icon: string;
+
 			/** The name of the popup. */
 			name: string;
-			/** Determines whether to show the fullscreen button. */
+
+			/**
+			 * Determines whether to show the fullscreen button.
+			 *
+			 * @default false
+			 */
 			fullscreen?: boolean;
 		};
+
 		/**
-		 * Determines whether the addon’s scripts should be considered disabled when disabled as the
-		 * page is running.
+		 * Determines whether the addon’s scripts should be considered disabled when disabled as the page is running.
+		 *
+		 * @default false
 		 */
 		dynamicDisable?: boolean;
+
 		/**
-		 * Determines whether the addon’s scripts should be considered enabled when enabled as the
-		 * page is running.
+		 * Determines whether the addon’s scripts should be considered enabled when enabled as the page is running.
+		 *
+		 * @default false
 		 */
 		dynamicEnable?: boolean;
+
 		/**
-		 * Determines whether the addon’s userstyles should be injected as style elements rather
-		 * than link elements.
+		 * Determines whether the addon’s userstyles should be injected as style elements rather than link elements.
+		 *
+		 * @default false
 		 */
 		injectAsStyleElt?: boolean;
+
 		/**
-		 * Determines whether the addon’s userstyles should be removed and rematched to the new
-		 * settings.
+		 * Determines whether the addon’s userstyles should be removed and rematched to the new settings.
+		 *
+		 * @default false
 		 */
 		updateUserstylesOnSettingsChange?: boolean;
+
 		/**
 		 * An array of CSS variables the addon defines.
 		 *
@@ -420,36 +519,51 @@ declare module "@sa-community/addons-data" {
 		customCssVariables?: {
 			/** The name of the CSS variable. */
 			name: string;
+
 			value: cssManipulator;
+
 			/** Whether to drop the variable entirely when it evaluates to null. */
 			dropNull?: boolean;
 		}[];
+
 		/** The version that introduced the addon. */
 		versionAdded: `1.${number}.${number}`;
-		/** Whether the addon has a preview. */
+
+		/**
+		 * Whether the addon has a preview.
+		 *
+		 * @default false
+		 */
 		addonPreview?: boolean;
+
 		/** The preview used for presets. */
 		presetPreview?:
 			| {
 					/** The type of the preview. */
 					type: "palette";
+
 					colors: string[];
 			  }
 			| {
 					/** The type of the preview. */
 					type: "stage-monitor-preset";
 			  };
+
 		/** The information about the latest update. */
 		latestUpdate?: {
 			/** The version of the update. */
 			version: string;
+
 			/** Whether to list the addon on "Featured new addons and updates". */
 			isMajor?: boolean;
+
 			/** The notice describing the update. */
 			temporaryNotice?: string;
+
 			/** The array of new setting IDs. */
 			newSettings?: string[];
 		};
+
 		/**
 		 * The list of related addons displayed on the settings page.
 		 *
@@ -459,5 +573,6 @@ declare module "@sa-community/addons-data" {
 	};
 
 	const Addons: { addonId: string; manifest: AddonManifest }[];
+
 	export default Addons;
 }
