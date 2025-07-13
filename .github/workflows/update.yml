@@ -95,7 +95,6 @@ jobs:
             - name: Publish
               if: steps.check_version.outputs.new_version == 'true'
               run: npm publish --provenance --access public
-              working-directory: dist
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
