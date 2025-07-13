@@ -7,6 +7,10 @@ on:
             Version:
                 required: false
                 type: string
+            Suffix:
+                required: false
+                type: string
+                default: ""
     schedule:
         - cron: 30 11/12 * * *
 
@@ -39,7 +43,7 @@ jobs:
             - name: Check version
               id: check_version
               run: |
-                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION"* ]]; then
+                  if [[ "v$(npm view @sa-community/addons-data version)${{ inputs.Suffix }}" == "$VERSION"* ]]; then
                       echo "No new version"
                       echo "new_version=false" >> "$GITHUB_OUTPUT"
                   else
