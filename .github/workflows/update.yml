@@ -60,8 +60,8 @@ jobs:
 
             - name: Generate manifests
               run: |
-                  HEADER='/** @satisfies {import("../../types.d.ts").AddonManifest} */\nconst addon = '
-                  FOOTER=';\nmodule.exports = addon;'
+                  HEADER='/** @satisfies {import("../../types.d.ts").AddonManifest} */\nconst addon = /** @type {const} */ ('
+                  FOOTER=');\nmodule.exports = addon;'
 
                   find . -type f -name "addon.json" | while read -r json_file; do
                     js_file="$(dirname "$json_file").js"
