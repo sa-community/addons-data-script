@@ -101,6 +101,12 @@ jobs:
                   node-version: 22.14.0
                   registry-url: "https://registry.npmjs.org"
 
+            - name: Publish
+              if: steps.check_version.outputs.new_version == 'true'
+              run: npm publish --provenance --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
             - name: Run typecheck
               id: typecheck
               run: |
