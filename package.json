@@ -10,10 +10,11 @@
 	"maintainers": [
 		"RedGuy12"
 	],
-	"main": "addons/addons.js",
+	"main": "addons.js",
 	"files": [
 		"package.json",
 		"addons/",
+		"addons.js",
 		"manifest.json",
 		"LICENSE",
 		"types.d.ts"
