@@ -102,7 +102,10 @@ jobs:
               run: |
                   cd script
                   npm ci
+                  npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict
                   npx tsc ../addons/addons.js --allowJs --checkJs --noEmit --strict > typecheck.log
+                  ls
+                  ls ..
                   cat typecheck.log
                   echo "LOG<<EOF" >> $GITHUB_OUTPUT
                   head -c 64000 typecheck.log >> $GITHUB_OUTPUT
