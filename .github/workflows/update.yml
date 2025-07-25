@@ -1,7 +1,5 @@
 name: Update addons data
 on:
-    push:
-        branches: main
     workflow_dispatch:
         inputs:
             Version:
@@ -103,7 +101,7 @@ jobs:
 
             - name: Publish
               if: steps.check_version.outputs.new_version == 'true'
-              run: npm publish --provenance --access public
+              run: npm publish --provenance --access public --tag latest
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
