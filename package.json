@@ -12,13 +12,13 @@
 	],
 	"main": "addons.js",
 	"files": [
+		"addons.d.ts",
 		"addons.js",
 		"addons/",
 		"LICENSE",
 		"manifest.json",
 		"package.json",
-		"README.md",
-		"types.d.ts"
+		"README.md"
 	],
 	"scripts": {
 		"format": "prettier --write \"**\" --ignore-unknown --cache"
