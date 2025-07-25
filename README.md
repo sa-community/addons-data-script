@@ -23,7 +23,7 @@ addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => 
 ### Types
 
 The package is fully typed, including all addon manifests.
-The [addon manifest typedef](types.d.ts) is based off [manifest-schema](https://github.com/ScratchAddons/manifest-schema), and I try to keep them as similar as possible.
+The [addon manifest typedef](addons.d.ts) is based off [manifest-schema](https://github.com/ScratchAddons/manifest-schema), and I try to keep them as similar as possible.
 
 All [addon manifests on Scratch Addons's `master` branch](https://github.com/ScratchAddons/ScratchAddons/tree/master/addons) are typechecked against that typedef every 12 hours.
 If there are any errors, an issue is automatically created.
