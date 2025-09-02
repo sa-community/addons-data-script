@@ -115,7 +115,7 @@ jobs:
               run: |
                   cd script
                   npm ci
-                  npx tsc ../addons.js ../addons/**.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
+                  npx tsc ../index.js ../addons/**.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
                   if [[ -s typecheck.log ]]; then
                     echo "has_errors=true" >>"$GITHUB_OUTPUT"
                     echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
