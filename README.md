@@ -8,9 +8,10 @@ The package exports an array of objects `{ addonId: string, manifest: AddonManif
 For example, to get all addon manifests with the `forums` tag:
 
 ```js
-const addons = require("@sa-community/addons-data");
 // or
 import addons from "@sa-community/addons-data";
+
+const addons = require("@sa-community/addons-data");
 
 addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.manifest);
 ```
@@ -19,9 +20,10 @@ Addon IDs are not included in the manifest itself.
 To get them:
 
 ```js
-const addons = require("@sa-community/addons-data");
 // or
 import addons from "@sa-community/addons-data";
+
+const addons = require("@sa-community/addons-data");
 
 addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.addonId);
 ```
@@ -67,9 +69,10 @@ TypeScript typedefs are also more portable and could be used in more contexts th
 You can also import just one addon by its ID:
 
 ```js
-const addon = require("@sa-community/addons-data/addons/semicolon");
 // or
 import addon from "@sa-community/addons-data/addons/semicolon";
+
+const addon = require("@sa-community/addons-data/addons/semicolon");
 
 console.log(addon.name); // Semicolon glitch
 console.log(addon.credits[0].name); // GrahamSH
@@ -83,9 +86,10 @@ Meaning, the type of each addon is the generic `AddonManifest`, and the types do
 This package also exports the extension manifest:
 
 ```js
-const manifest = require("@sa-community/addons-data/manifest.json");
 // or
 import manifest from "@sa-community/addons-data/manifest.json" with { type: "json" };
+
+const manifest = require("@sa-community/addons-data/manifest.json");
 
 console.log(manifest.version); // 1.42.0
 console.log(manifest.homepage_url); // https://scratchaddons.com

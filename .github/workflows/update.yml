@@ -55,7 +55,7 @@ jobs:
                     echo "new_version=true" >>"$GITHUB_OUTPUT"
                   fi
               env:
-                PATCH: ${{ inputs.Patch }}
+                  PATCH: ${{ inputs.Patch }}
 
             - name: Checkout
               if: steps.check_version.outputs.new_version == 'true'
@@ -135,7 +135,8 @@ jobs:
               with:
                   title: 🚨 Typecheck Failed in CI
                   unique-title-includes: 🚨 Typecheck Failed in CI
-                  body: "https://github.com/ScratchAddons/ScratchAddons/tree/${{steps.typecheck.outputs.sha}}\n```\n${{steps.typecheck.outputs.LOG}}\n```"
+                  body:
+                      "https://github.com/ScratchAddons/ScratchAddons/tree/${{steps.typecheck.outputs.sha}}\n```\n${{steps.typecheck.outputs.LOG}}\n```"
 
             - name: Close issue if typecheck passed
               if: steps.typecheck.outputs.has_errors == 'false'
