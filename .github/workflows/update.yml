@@ -53,13 +53,13 @@ jobs:
               if: steps.check_version.outputs.new_version == 'true'
               run: git checkout "$VERSION"
 
-            - name: Generate addons.js
+            - name: Generate index.js
               run: |
-                  echo "module.exports = [" >addons.js
-                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >>addons.js
-                  echo "];" >>addons.js
+                  echo "module.exports = [" >index.js
+                  jq -r '.[] | select(type == "string" and startswith("//") | not) | "{addonId: \"\(.)\", manifest: require(\"./addons/\(.).js\")}"' addons/addons.json | sed 's/$/,/' >>index.js
+                  echo "];" >>index.js
 
-                  echo -e 'declare const _exports: { addonId: string; manifest: import("./addons.d.ts").AddonManifest; }[];\nexport = _exports;' >addons.d.ts
+                  echo -e 'declare const _exports: { addonId: string; manifest: import("./addons.d.ts").AddonManifest; }[];\nexport = _exports;' >index.d.ts
 
                   rm addons/addons.json
 
