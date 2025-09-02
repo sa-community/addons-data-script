@@ -9,6 +9,7 @@ For example, to get all addon manifests with the `forums` tag:
 
 ```js
 import addons from "@sa-community/addons-data";
+
 // or
 const addons = require("@sa-community/addons-data");
 
@@ -20,6 +21,7 @@ To get them:
 
 ```js
 import addons from "@sa-community/addons-data";
+
 // or
 const addons = require("@sa-community/addons-data");
 
@@ -68,6 +70,7 @@ You can also import just one addon by its ID:
 
 ```js
 import addon from "@sa-community/addons-data/addons/semicolon";
+
 // or
 const addon = require("@sa-community/addons-data/addons/semicolon");
 
@@ -84,6 +87,7 @@ This package also exports the extension manifest:
 
 ```js
 import manifest from "@sa-community/addons-data/manifest.json" with { type: "json" };
+
 // or
 const manifest = require("@sa-community/addons-data/manifest.json");
 
