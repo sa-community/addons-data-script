@@ -10,9 +10,6 @@ For example, to get all addon manifests with the `forums` tag:
 ```js
 import addons from "@sa-community/addons-data";
 
-// or
-const addons = require("@sa-community/addons-data");
-
 addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.manifest);
 ```
 
@@ -22,10 +19,15 @@ To get them:
 ```js
 import addons from "@sa-community/addons-data";
 
-// or
+addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.addonId);
+```
+
+`@sa-community/addons-data` uses CommonJS, meaning that it can also be used via `require`:
+
+```js
 const addons = require("@sa-community/addons-data");
 
-addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.addonId);
+addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.manifest);
 ```
 
 ### Versioning
@@ -71,9 +73,6 @@ You can also import just one addon by its ID:
 ```js
 import addon from "@sa-community/addons-data/addons/semicolon";
 
-// or
-const addon = require("@sa-community/addons-data/addons/semicolon");
-
 console.log(addon.name); // Semicolon glitch
 console.log(addon.credits[0].name); // GrahamSH
 ```
@@ -87,9 +86,6 @@ This package also exports the extension manifest:
 
 ```js
 import manifest from "@sa-community/addons-data/manifest.json" with { type: "json" };
-
-// or
-const manifest = require("@sa-community/addons-data/manifest.json");
 
 console.log(manifest.version); // 1.42.0
 console.log(manifest.homepage_url); // https://scratchaddons.com

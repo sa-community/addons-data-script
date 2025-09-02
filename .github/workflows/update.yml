@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
         inputs:
             Version:
-                description: Include the `v` prefix
+                description: SA Version (with `v` prefix)
                 required: false
                 type: string
             Patch:
@@ -118,6 +118,8 @@ jobs:
             - name: Run typecheck
               id: typecheck
               run: |
+                  echo "sha=$(git log -1 --pretty=format:%H)" >>"$GITHUB_OUTPUT"
+
                   cd script
                   npm ci
                   npx tsc ../index.js ../addons/**.js --allowJs --checkJs --noEmit --strict >typecheck.log || true
@@ -126,7 +128,6 @@ jobs:
                     echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
                     head -c 64000 typecheck.log >>"$GITHUB_OUTPUT"
                     echo "EOF" >>"$GITHUB_OUTPUT"
-                    echo "sha=$(git log -1 --pretty=format:%H)" >>"$GITHUB_OUTPUT"
                   else
                     echo "has_errors=false" >>"$GITHUB_OUTPUT"
                   fi
