@@ -44,7 +44,7 @@ jobs:
 
             - name: Check version
               id: check_version
-              if: inputs.Dryrun == 'false'
+              if: ${{ !inputs.Dryrun }}
               run: |
                   if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION${{ inputs.Postfix }}"* ]]; then
                     echo "No new version"
