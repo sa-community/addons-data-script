@@ -9,6 +9,9 @@ For example, to get all addon manifests with the `forums` tag:
 
 ```js
 const addons = require("@sa-community/addons-data");
+// or
+import addons from "@sa-community/addons-data";
+
 addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.manifest);
 ```
 
@@ -17,8 +20,19 @@ To get them:
 
 ```js
 const addons = require("@sa-community/addons-data");
+// or
+import addons from "@sa-community/addons-data";
+
 addons.filter((addon) => addon.manifest.tags.includes("forums")).map((addon) => addon.addonId);
 ```
+
+### Versioning
+
+This package is versioned based off Scratch Addons itself.
+The versioning schema is `SA major + SA minor (3-digit zero-padded) + "." + SA patch + "." + data patch`.
+In other words, for SA version `1.2.3`, you would install `@sa-community/addons-data@~1002.3.0`, or for SA version `1.40.0`, you would install `@sa-community/addons-data@~1040.0.0`.
+
+Please note that in version 1.41.0 and prior, the version number of this package was identical to that of Scratch Addons instead.
 
 ### Types
 
@@ -28,6 +42,10 @@ The [addon manifest typedef](addons.d.ts) is based off [manifest-schema](https:/
 All [addon manifests on Scratch Addons's `master` branch](https://github.com/ScratchAddons/ScratchAddons/tree/master/addons) are typechecked against that typedef every 12 hours.
 If there are any errors, an issue is automatically created.
 Issues indicate either that the typedef needs to be updated or a mistake in an addon manifest.
+
+I try my best to keep the typedef updated.
+However, only the latest released is guaranteed to be accurate.
+If mistakes with a version's types are found only once it is no longer the latest version, I will not retroactively rerelease.
 
 #### Typedef vs JSON Schema
 
@@ -50,6 +68,9 @@ You can also import just one addon by its ID:
 
 ```js
 const addon = require("@sa-community/addons-data/addons/semicolon");
+// or
+import addon from "@sa-community/addons-data/addons/semicolon";
+
 console.log(addon.name); // Semicolon glitch
 console.log(addon.credits[0].name); // GrahamSH
 ```
@@ -62,7 +83,10 @@ Meaning, the type of each addon is the generic `AddonManifest`, and the types do
 This package also exports the extension manifest:
 
 ```js
-const addon = require("@sa-community/addons-data/manifest.json");
+const manifest = require("@sa-community/addons-data/manifest.json");
+// or
+import manifest from "@sa-community/addons-data/manifest.json" with { type: "json" };
+
 console.log(manifest.version); // 1.42.0
 console.log(manifest.homepage_url); // https://scratchaddons.com
 ```

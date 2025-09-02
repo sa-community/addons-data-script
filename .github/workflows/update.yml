@@ -5,10 +5,10 @@ on:
             Version:
                 required: false
                 type: string
-            Postfix:
+            Patch:
                 required: false
-                type: string
-                default: ""
+                type: number
+                default: 0
             Dryrun:
                 required: false
                 type: boolean
@@ -38,21 +38,24 @@ jobs:
                   fetch-depth: 0
 
             - name: Get version
-              run:
-                  echo "VERSION=${{ inputs.Version || '$(git describe --tags "$(git rev-list --tags
-                  --max-count=1)")' }}" >>"$GITHUB_ENV"
+              run: |
+                  echo "VERSION=${{inputs.Version || '$(git describe --tags "$(git rev-list --tags --max-count=1)")'}}" >>"$GITHUB_ENV"
+                  IFS=. read -r MAJOR MINOR PATCH <<< "${VERSION#v}"
+                  echo "PUBLISH_VERSION=$(printf "%d%03d.%s" "$MAJOR" "$MINOR" "$PATCH")" >>"$GITHUB_ENV"
 
             - name: Check version
               id: check_version
-              if: ${{ !inputs.Dryrun }}
+              if: ${{!inputs.Dryrun}}
               run: |
-                  if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION${{ inputs.Postfix }}"* ]]; then
+                  if [[ "$(npm view @sa-community/addons-data version)" == "$PUBLISH_VERSION."* && $PATCH == 0 ]]; then
                     echo "No new version"
                     echo "new_version=false" >>"$GITHUB_OUTPUT"
                   else
                     echo "New version found"
                     echo "new_version=true" >>"$GITHUB_OUTPUT"
                   fi
+              env:
+                PATCH: ${{ inputs.Patch }}
 
             - name: Checkout
               if: steps.check_version.outputs.new_version == 'true'
@@ -95,8 +98,8 @@ jobs:
 
             - if: steps.check_version.outputs.new_version == 'true'
               run:
-                  cat script/package.json | sed "s/VERSION/$(echo "$VERSION" | sed 's/v//')${{
-                  inputs.Postfix }}/" >package.json
+                  cat script/package.json | sed "s/VERSION/$PUBLISH_VERSION.${{inputs.Patch}}/"
+                  >package.json
 
             - name: Setup Node.JS
               uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -108,7 +111,7 @@ jobs:
               if: steps.check_version.outputs.new_version == 'true'
               run: npm publish --provenance --access public --tag latest
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
             - name: Run typecheck
               id: typecheck
@@ -121,6 +124,7 @@ jobs:
                     echo "LOG<<EOF" >>"$GITHUB_OUTPUT"
                     head -c 64000 typecheck.log >>"$GITHUB_OUTPUT"
                     echo "EOF" >>"$GITHUB_OUTPUT"
+                    echo "sha=$(git log -1 --pretty=format:%H)" >>"$GITHUB_OUTPUT"
                   else
                     echo "has_errors=false" >>"$GITHUB_OUTPUT"
                   fi
@@ -131,11 +135,11 @@ jobs:
               with:
                   title: 🚨 Typecheck Failed in CI
                   unique-title-includes: 🚨 Typecheck Failed in CI
-                  body: "```\n${{ steps.typecheck.outputs.LOG }}\n```"
+                  body: "https://github.com/ScratchAddons/ScratchAddons/tree/${{steps.typecheck.outputs.sha}}\n```\n${{steps.typecheck.outputs.LOG}}\n```"
 
             - name: Close issue if typecheck passed
               if: steps.typecheck.outputs.has_errors == 'false'
               uses: lee-dohm/close-matching-issues@e9e43aad2fa6f06a058cedfd8fb975fd93b56d8f # v2.1.0
               with:
                   query: "🚨 Typecheck Failed in CI is:open author:app/github-actions"
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  token: ${{secrets.GITHUB_TOKEN}}
