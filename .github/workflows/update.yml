@@ -44,7 +44,7 @@ jobs:
 
             - name: Check version
               id: check_version
-              if: inputs.Dryrun == "false"
+              if: inputs.Dryrun == 'false'
               run: |
                   if [[ "v$(npm view @sa-community/addons-data version)" == "$VERSION${{ inputs.Postfix }}"* ]]; then
                     echo "No new version"
@@ -55,7 +55,7 @@ jobs:
                   fi
 
             - name: Checkout
-              if: steps.check_version.outputs.new_version == "true"
+              if: steps.check_version.outputs.new_version == 'true'
               run: git checkout "$VERSION"
 
             - name: Generate index.js
@@ -93,7 +93,7 @@ jobs:
             - name: Move README
               run: mv script/README.md README.md
 
-            - if: steps.check_version.outputs.new_version == "true"
+            - if: steps.check_version.outputs.new_version == 'true'
               run:
                   cat script/package.json | sed "s/VERSION/$(echo "$VERSION" | sed 's/v//')${{
                   inputs.Postfix }}/" >package.json
@@ -105,7 +105,7 @@ jobs:
                   registry-url: "https://registry.npmjs.org"
 
             - name: Publish
-              if: steps.check_version.outputs.new_version == "true"
+              if: steps.check_version.outputs.new_version == 'true'
               run: npm publish --provenance --access public --tag latest
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -126,7 +126,7 @@ jobs:
                   fi
 
             - name: Create or comment on issue
-              if: steps.typecheck.outputs.has_errors == "true"
+              if: steps.typecheck.outputs.has_errors == 'true'
               uses: ovsds/create-or-update-unique-issue-action@8999e391f74f20449dcc70e94aee731a3938d543 # v1.1.0
               with:
                   title: 🚨 Typecheck Failed in CI
@@ -134,7 +134,7 @@ jobs:
                   body: "```\n${{ steps.typecheck.outputs.LOG }}\n```"
 
             - name: Close issue if typecheck passed
-              if: steps.typecheck.outputs.has_errors == "false"
+              if: steps.typecheck.outputs.has_errors == 'false'
               uses: lee-dohm/close-matching-issues@e9e43aad2fa6f06a058cedfd8fb975fd93b56d8f # v2.1.0
               with:
                   query: "🚨 Typecheck Failed in CI is:open author:app/github-actions"
