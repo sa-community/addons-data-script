@@ -17,6 +17,7 @@ on:
     schedule:
         - cron: 30 11/12 * * *
     push:
+        branches: "main"
 
 permissions: write-all
 
