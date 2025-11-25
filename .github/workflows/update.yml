@@ -9,7 +9,7 @@ on:
             Patch:
                 required: false
                 type: number
-                default: 0
+                default: "0"
             Dryrun:
                 required: false
                 type: boolean
