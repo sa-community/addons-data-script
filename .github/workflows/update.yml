@@ -9,13 +9,14 @@ on:
             Patch:
                 required: false
                 type: number
-                default: "0"
+                default: 0
             Dryrun:
                 required: false
                 type: boolean
                 default: false
     schedule:
         - cron: 30 11/12 * * *
+    push:
 
 permissions: write-all
 
@@ -57,7 +58,7 @@ jobs:
                     echo "new_version=true" >>"$GITHUB_OUTPUT"
                   fi
               env:
-                  PATCH: ${{inputs.Patch}}
+                  PATCH: ${{inputs.Patch||0}}
 
             - name: Checkout
               if: steps.check_version.outputs.new_version == 'true'
@@ -100,7 +101,7 @@ jobs:
 
             - if: steps.check_version.outputs.new_version == 'true'
               run:
-                  cat script/package.json | sed "s/VERSION/$PUBLISH_VERSION.${{inputs.Patch}}/"
+                  cat script/package.json | sed "s/VERSION/$PUBLISH_VERSION.${{inputs.Patch||0}}/"
                   >package.json
 
             - name: Setup Node.JS
