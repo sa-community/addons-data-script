@@ -28,7 +28,7 @@
 	"prettier": "@redguy12/prettier-config",
 	"devDependencies": {
 		"@redguy12/prettier-config": "3.4.4",
-		"prettier": "3.7.1",
+		"prettier": "3.7.4",
 		"typescript": "5.9.3"
 	}
 }
