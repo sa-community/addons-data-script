@@ -19,7 +19,9 @@ on:
     push:
         branches: "main"
 
-permissions: write-all
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
 
 jobs:
     update:
@@ -114,8 +116,6 @@ jobs:
             - name: Publish
               if: steps.check_version.outputs.new_version == 'true'
               run: npm publish --provenance --access public --tag latest
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
             - name: Run typecheck
               id: typecheck
