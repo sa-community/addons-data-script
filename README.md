@@ -36,7 +36,8 @@ This package is versioned based off Scratch Addons itself.
 The versioning schema is `SA major + SA minor (3-digit zero-padded) + "." + SA patch + "." + data patch`.
 In other words, for SA version `1.41.3`, you would install `@sa-community/addons-data@~1041.3.0`, or for SA version `1.100.0`, you would install `@sa-community/addons-data@~1100.0.0`.
 
-Please note that in version 1.41.0 and prior, the version number of this package was, for the most part, identical to that of Scratch Addons instead. (Individual exceptions are marked as deprecated; please follow the deprecation messages)
+Please note that in version 1.41.0 and prior, the version number of this package was, for the most part, identical to that of Scratch Addons instead.
+(Individual exceptions are marked as deprecated; please follow the deprecation messages)
 
 ### Types
 
