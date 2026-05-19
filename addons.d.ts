@@ -462,7 +462,7 @@ export type AddonManifest = {
 	 */
 	info?: {
 		/** Type of the information. */
-		type?: "warning" | "notice" | "info";
+		type?: "waning" | "notice" | "info";
 
 		/** ID of the information. */
 		id: string;
