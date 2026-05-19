@@ -30,7 +30,8 @@ jobs:
         name: Update
         runs-on: ubuntu-24.04
         permissions:
-            id-token: write # Required for OIDC
+          id-token: write # Required for OIDC
+          issues: write # Required to create an issue
 
         steps:
             - name: Clone
