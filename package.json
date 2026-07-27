@@ -28,7 +28,7 @@
 	"prettier": "@redguy12/prettier-config",
 	"devDependencies": {
 		"@redguy12/prettier-config": "3.4.5",
-		"prettier": "3.8.3",
+		"prettier": "3.9.6",
 		"typescript": "6.0.3"
 	},
 	"engines": {
