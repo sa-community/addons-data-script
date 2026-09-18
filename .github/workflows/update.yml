@@ -31,7 +31,7 @@ env:
 jobs:
     update:
         name: Update
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         permissions:
             id-token: write # Required for OIDC
             issues: write # Required to create an issue
